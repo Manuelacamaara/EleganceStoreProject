@@ -1,6 +1,6 @@
 import Product from '../models/Product.js';
 
-// Busca todos os produtos
+// LISTAR
 export async function getProducts(req, res) {
   try {
     const products = await Product.find({});
@@ -10,50 +10,63 @@ export async function getProducts(req, res) {
   }
 }
 
-// Cria um novo produto (Admin)
+// CRIAR
 export async function createProduct(req, res) {
   try {
-    const { name, price, image, countInStock } = req.body;
+    const { name, price, imageUrl, stock } = req.body;
+
     const product = await Product.create({
-      name, price, image, countInStock, description: 'Peça exclusiva Elegance Store'
+      name,
+      price,
+      imageUrl,
+      stock,
+      category: 'Roupas',
+      description: 'Peça exclusiva Elegance Store'
     });
+
     res.status(201).json(product);
+
   } catch (error) {
     res.status(500).json({ message: 'Erro ao criar produto' });
   }
 }
 
-// Atualiza um produto existente (Admin)
+// ATUALIZAR
 export async function updateProduct(req, res) {
   try {
-    const { name, price, image, countInStock } = req.body;
+    const { name, price, imageUrl, stock } = req.body;
+
     const product = await Product.findById(req.params.id);
 
-    if (product) {
-      product.name = name || product.name;
-      product.price = price || product.price;
-      product.image = image || product.image;
-      product.countInStock = countInStock || product.countInStock;
-
-      const updatedProduct = await product.save();
-      res.json(updatedProduct);
-    } else {
-      res.status(404).json({ message: 'Produto não encontrado' });
+    if (!product) {
+      return res.status(404).json({ message: 'Produto não encontrado' });
     }
+
+    product.name = name ?? product.name;
+    product.price = price ?? product.price;
+    product.imageUrl = imageUrl ?? product.imageUrl;
+    product.stock = stock ?? product.stock;
+
+    const updated = await product.save();
+
+    res.json(updated);
+
   } catch (error) {
     res.status(500).json({ message: 'Erro ao atualizar produto' });
   }
 }
 
-// Exclui um produto (Admin)
+// DELETAR
 export async function deleteProduct(req, res) {
   try {
     const product = await Product.findByIdAndDelete(req.params.id);
-    if (product) {
-      res.json({ message: 'Produto removido com sucesso' });
-    } else {
-      res.status(404).json({ message: 'Produto não encontrado' });
+
+    if (!product) {
+      return res.status(404).json({ message: 'Produto não encontrado' });
     }
+
+    res.json({ message: 'Produto removido com sucesso' });
+
   } catch (error) {
     res.status(500).json({ message: 'Erro ao deletar produto' });
   }

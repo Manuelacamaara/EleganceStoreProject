@@ -10,11 +10,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const userInfo = document.getElementById('userInfo');
   const logoutBtn = document.getElementById('logoutBtn');
+  const navPedidos = document.getElementById('navPedidos');
 
   if (userInfo) {
     userInfo.innerText = `Olá, ${userName}`;
     userInfo.style.display = 'inline-block';
   }
+  
+  if (navPedidos) {
+    navPedidos.style.display = 'inline-block';
+  }
+
   if (logoutBtn) {
     logoutBtn.style.display = 'inline-block';
     logoutBtn.classList.remove('hidden');
@@ -50,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
           },
-          body: JSON.stringify({ items }) // Back-end calcula o total
+          body: JSON.stringify({ items })
         });
 
         const data = await response.json();
@@ -59,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
           const numeroPedido = data._id ? data._id.substring(0, 6).toUpperCase() : '0001';
           alert(`Pedido #${numeroPedido} realizado com sucesso! 🎉`);
           localStorage.removeItem('carrinho');
-          window.location.href = '/pedidos.html'; // Agora manda direto para os pedidos!
+          window.location.href = '/pedidos.html'; 
         } else {
           alert(`Erro: ${data.message}`);
           checkoutBtn.innerText = "Finalizar Compra";
@@ -82,7 +88,6 @@ function renderizarCarrinho() {
   let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
   cartItemsContainer.innerHTML = ''; 
 
-  // AQUI ESTÁ O LINK CORRIGIDO PARA A PÁGINA DE PRODUTOS
   if (carrinho.length === 0) {
     cartItemsContainer.innerHTML = `
       <div style="text-align:center; margin: 50px 0;">
@@ -107,7 +112,12 @@ function renderizarCarrinho() {
       <img src="${item.imagem}" alt="${item.nome}">
       <div class="cart-info">
         <h4>${item.nome}</h4>
-        <p>Qtd: ${item.quantidade} x R$ ${item.preco.toFixed(2).replace('.', ',')}</p>
+        <div class="qty-controls">
+          <button class="btn-qty" onclick="alterarQuantidade(${index}, -1)">-</button>
+          <span>${item.quantidade}</span>
+          <button class="btn-qty" onclick="alterarQuantidade(${index}, 1)">+</button>
+        </div>
+        <p style="margin-top: 5px;">R$ ${item.preco.toFixed(2).replace('.', ',')} cada</p>
       </div>
       <div class="cart-price">
         <p><strong>R$ ${subtotal.toFixed(2).replace('.', ',')}</strong></p>
@@ -120,6 +130,22 @@ function renderizarCarrinho() {
   cartTotalElement.innerText = totalConta.toFixed(2).replace('.', ',');
   checkoutBtn.style.display = 'block'; 
 }
+
+// Função nova para somar e subtrair quantidades
+window.alterarQuantidade = function(index, mudanca) {
+  let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+  if (carrinho[index]) {
+    carrinho[index].quantidade += mudanca;
+    
+    // Garante que a quantidade nunca seja menor que 1
+    if (carrinho[index].quantidade < 1) {
+      carrinho[index].quantidade = 1;
+    }
+    
+    localStorage.setItem('carrinho', JSON.stringify(carrinho));
+    renderizarCarrinho(); // Renderiza de novo para atualizar o total automático
+  }
+};
 
 window.removerItem = function(index) {
   let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];

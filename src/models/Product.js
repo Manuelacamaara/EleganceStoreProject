@@ -9,7 +9,8 @@ const productSchema = new mongoose.Schema(
     },
     description: {
       type: String,
-      required: [true, 'A descrição é obrigatória']
+      required: true,
+      default: 'Peça exclusiva Elegance Store'
     },
     price: {
       type: Number,
@@ -18,21 +19,21 @@ const productSchema = new mongoose.Schema(
     },
     stock: {
       type: Number,
-      required: [true, 'O estoque é obrigatório'],
+      required: true,
       min: [0, 'O estoque não pode ser negativo']
     },
     category: {
       type: String,
-      required: [true, 'A categoria é obrigatória'],
-      trim: true
+      required: true,
+      default: 'Roupas'
     },
     imageUrl: {
       type: String,
-      default: '' // Se não enviar imagem, fica vazio
+      required: true
     }
   },
   {
-    timestamps: true // Cria automaticamente as datas de 'createdAt' e 'updatedAt'
+    timestamps: true
   }
 );
 

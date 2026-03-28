@@ -6,7 +6,6 @@
   <title>Carrinho | Elegance Store</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    /* Estilos extras apenas para organizar os itens do carrinho */
     .cart-container { max-width: 800px; margin: 40px auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
     .cart-item { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #eee; padding: 15px 0; }
     .cart-item:last-child { border-bottom: none; }
@@ -18,6 +17,12 @@
     .cart-total { text-align: right; margin-top: 30px; font-size: 1.5rem; color: #5a3e49; border-top: 2px solid #eee; padding-top: 20px;}
     .btn-remove { background: #ff4d4d; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; margin-top: 10px; transition: background 0.3s;}
     .btn-remove:hover { background: #e60000; }
+    
+    /* Novos estilos para os botões de + e - */
+    .qty-controls { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
+    .btn-qty { background: #f1e5eb; border: none; padding: 4px 12px; border-radius: 4px; cursor: pointer; font-size: 1.2rem; color: #5a3e49; font-weight: bold; transition: 0.2s; }
+    .btn-qty:hover { background: #dccfd5; }
+    .qty-controls span { font-weight: bold; color: #2a2025; width: 20px; text-align: center; }
   </style>
 </head>
 <body style="background-color: #fcf9f9;">
@@ -25,6 +30,14 @@
   <header class="topo">
     <div class="container topo-conteudo">
       <h1><a href="/index.html" style="text-decoration: none; color: inherit;">Elegance Store</a></h1>
+      
+      <nav class="menu-navegacao">
+        <a href="/index.html">Início</a>
+        <a href="/index.html#sobre">Sobre</a>
+        <a href="/produtos.html">Produtos</a>
+        <a href="/pedidos.html" id="navPedidos" style="display: none;">Meus Pedidos</a>
+        <a href="/carrinho.html">Carrinho (<span id="cartCount">0</span>)</a>
+      </nav>
 
       <div class="topo-acoes">
         <span id="userInfo" class="user-info"></span>

@@ -411,3 +411,79 @@ a {
     justify-content: center;
   }
 }
+.btn-add {
+  width: 100%;
+  padding: 10px;
+  background-color: #5a3e49; /* cor principal */
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.btn-add:hover {
+  background-color: #4a323c; /* hover mais escuro */
+  transform: scale(1.02);
+}
+
+.btn-add:active {
+  transform: scale(0.98);
+}
+
+.btn-add.disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+/* ===============================
+   ESTILOS DO NOVO RODAPÉ (FOOTER)
+   =============================== */
+.rodape {
+  background-color: #5a3e49;
+  color: white;
+  padding: 60px 0 20px;
+  font-family: inherit;
+}
+
+.rodape-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 40px;
+  margin-bottom: 40px;
+}
+
+.rodape-col h3 {
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+  color: #f1e5eb;
+}
+
+.rodape-col h4 {
+  font-size: 1.1rem;
+  margin-bottom: 15px;
+  color: #f1e5eb;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.rodape-col p, 
+.rodape-col a {
+  color: #dccfd5;
+  font-size: 0.95rem;
+  margin-bottom: 10px;
+  display: block;
+}
+
+.rodape-col a:hover {
+  color: white;
+  text-decoration: underline;
+}
+
+.rodape-copy {
+  text-align: center;
+  border-top: 1px solid #7a5a67;
+  padding-top: 20px;
+  font-size: 0.85rem;
+  color: #dccfd5;
+}
