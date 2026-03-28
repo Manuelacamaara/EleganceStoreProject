@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Produtos | Elegance Store</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body style="background-color: #fcf9f9;">
+  <header class="topo">
+    <div class="container topo-conteudo">
+      <h1><a href="/index.html" style="text-decoration: none; color: inherit;">Elegance Store</a></h1>
+      
+      <nav class="menu-navegacao">
+        <a href="/index.html">Início</a>
+        <a href="/produtos.html" style="font-weight: bold;">Produtos</a>
+        <a href="/pedidos.html" id="navPedidos" style="display: none;">Meus Pedidos</a>
+        <a href="/carrinho.html">Carrinho (<span id="cartCount">0</span>)</a>
+      </nav>
+
+      <div class="topo-acoes">
+        <span id="userInfo" class="user-info"></span>
+        <a id="loginLink" href="/login.html" class="btn-topo">Login</a>
+        <button id="logoutBtn" class="btn-topo btn-topo-secundario hidden">Sair</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" style="padding: 40px 0;">
+    <h2 style="color: #5a3e49; margin-bottom: 30px; text-align: center; font-size: 2.5rem;">Nossa Coleção</h2>
+    <div id="product-list" class="grid-produtos"></div>
+  </main>
+
+  <footer style="background-color: #5a3e49; color: white; text-align: center; padding: 30px 0; margin-top: 40px;">
+    <p>&copy; 2024 Elegance Store.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

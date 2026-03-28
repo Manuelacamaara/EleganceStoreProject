@@ -1,0 +1,135 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background: linear-gradient(135deg, #fff7fb 0%, #f8f2ee 100%);
+  min-height: 100vh;
+  color: #241d21;
+}
+
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 460px;
+  background: #ffffff;
+  border: 1px solid #ece3e7;
+  border-radius: 24px;
+  padding: 32px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
+}
+
+.voltar {
+  display: inline-block;
+  margin-bottom: 20px;
+  color: #7a425f;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.mini-label {
+  color: #7a425f;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+}
+
+.login-card h1 {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.subtexto {
+  color: #5e5459;
+  margin-bottom: 24px;
+  line-height: 1.6;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.campo label {
+  font-weight: 700;
+  color: #3b3136;
+}
+
+.campo input {
+  height: 50px;
+  border: 1px solid #dccfd5;
+  border-radius: 14px;
+  padding: 0 14px;
+  font-size: 1rem;
+  outline: none;
+}
+
+.campo input:focus {
+  border-color: #7a425f;
+  box-shadow: 0 0 0 3px rgba(122, 66, 95, 0.12);
+}
+
+.btn-login {
+  margin-top: 6px;
+  height: 52px;
+  border: none;
+  border-radius: 14px;
+  background: #7a425f;
+  color: white;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.btn-login:hover {
+  background: #65344d;
+}
+
+.mensagem {
+  margin-top: 18px;
+  min-height: 24px;
+  font-weight: 700;
+}
+
+.mensagem.erro {
+  color: #b42318;
+}
+
+.mensagem.sucesso {
+  color: #027a48;
+}
+
+.credenciais-box {
+  margin-top: 24px;
+  background: #faf6f8;
+  border: 1px solid #efe3e8;
+  border-radius: 16px;
+  padding: 16px;
+  color: #5f565a;
+}
+
+.credenciais-titulo {
+  font-weight: 700;
+  color: #7a425f;
+  margin-bottom: 6px;
+}

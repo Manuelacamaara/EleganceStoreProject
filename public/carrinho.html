@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carrinho | Elegance Store</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Estilos extras apenas para organizar os itens do carrinho */
+    .cart-container { max-width: 800px; margin: 40px auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+    .cart-item { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #eee; padding: 15px 0; }
+    .cart-item:last-child { border-bottom: none; }
+    .cart-item img { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; }
+    .cart-info { flex: 1; margin-left: 20px; }
+    .cart-info h4 { margin: 0 0 5px 0; color: #5a3e49; }
+    .cart-info p { margin: 0; color: #666; font-size: 0.9rem; }
+    .cart-price { text-align: right; }
+    .cart-total { text-align: right; margin-top: 30px; font-size: 1.5rem; color: #5a3e49; border-top: 2px solid #eee; padding-top: 20px;}
+    .btn-remove { background: #ff4d4d; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; margin-top: 10px; transition: background 0.3s;}
+    .btn-remove:hover { background: #e60000; }
+  </style>
+</head>
+<body style="background-color: #fcf9f9;">
+
+  <header class="topo">
+    <div class="container topo-conteudo">
+      <h1><a href="/index.html" style="text-decoration: none; color: inherit;">Elegance Store</a></h1>
+
+      <div class="topo-acoes">
+        <span id="userInfo" class="user-info"></span>
+        <button id="logoutBtn" class="btn-topo btn-topo-secundario hidden">Sair</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="cart-container">
+      <h2 style="color: #5a3e49; margin-bottom: 20px;">Seu Carrinho de Compras</h2>
+      
+      <div id="cartItems">
+        </div>
+
+      <div class="cart-total">
+        <strong>Total: R$ <span id="cartTotal">0,00</span></strong>
+      </div>
+      
+      <button id="checkoutBtn" class="btn" style="width: 100%; margin-top: 30px; font-size: 1.1rem; padding: 15px; display: none;">
+        Finalizar Compra
+      </button>
+    </div>
+  </main>
+
+  <script src="carrinho.js"></script>
+</body>
+</html>

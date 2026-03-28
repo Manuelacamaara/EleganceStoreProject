@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Painel Admin | Elegance Store</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .admin-container { max-width: 900px; margin: 40px auto; display: grid; gap: 30px; grid-template-columns: 1fr 1.5fr; }
+    .admin-card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 0.9rem; }
+    th, td { text-align: left; padding: 12px; border-bottom: 1px solid #eee; }
+    th { background-color: #f9f9f9; color: #5a3e49; }
+    .btn-small { padding: 5px 10px; font-size: 0.8rem; margin-right: 5px; cursor: pointer; border: none; border-radius: 4px; color: white; }
+    .btn-edit { background-color: #d4a373; }
+    .btn-delete { background-color: #ff4d4d; }
+    
+    /* Responsividade para telas menores */
+    @media (max-width: 768px) { .admin-container { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body style="background-color: #fcf9f9;">
+  <header class="topo" style="border-bottom: 3px solid #d4a373;">
+    <div class="container topo-conteudo">
+      <h1>Área Administrativa</h1>
+      <nav class="menu-navegacao"><a href="/index.html">Sair do Painel</a></nav>
+    </div>
+  </header>
+
+  <main class="container admin-container">
+    
+    <div class="admin-card">
+      <h3 id="formTitle" style="color: #5a3e49; margin-bottom: 15px;">Cadastrar Novo Produto</h3>
+      <form id="adminForm" class="product-form">
+        <input type="hidden" id="prodId"> <div class="campo-form">
+          <label>Nome da Peça</label>
+          <input type="text" id="prodName" required>
+        </div>
+        <div class="campo-form">
+          <label>Preço (R$)</label>
+          <input type="number" id="prodPrice" step="0.01" required>
+        </div>
+        <div class="campo-form">
+          <label>URL da Imagem</label>
+          <input type="url" id="prodImage" required>
+        </div>
+        <div class="campo-form">
+          <label>Estoque</label>
+          <input type="number" id="prodStock" required>
+        </div>
+        <button type="submit" id="submitBtn" class="btn" style="width: 100%;">Salvar Produto</button>
+        <button type="button" id="cancelBtn" class="btn btn-secundario" style="width: 100%; margin-top: 10px; display: none; background: #ccc;">Cancelar Edição</button>
+        <div id="adminMessage" style="margin-top: 15px; font-weight: bold; text-align: center;"></div>
+      </form>
+    </div>
+
+    <div class="admin-card" style="overflow-x: auto;">
+      <h3 style="color: #5a3e49;">Estoque Atual</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Produto</th>
+            <th>Preço</th>
+            <th>Estoque</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="adminProductList">
+          </tbody>
+      </table>
+    </div>
+
+  </main>
+
+  <script src="admin.js"></script>
+</body>
+</html>

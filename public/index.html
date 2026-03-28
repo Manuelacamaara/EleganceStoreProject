@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Elegance Store | Moda Feminina</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="topo">
+    <div class="container topo-conteudo">
+      <h1><a href="/index.html" style="text-decoration: none; color: inherit;">Elegance Store</a></h1>
+      
+      <nav class="menu-navegacao">
+        <a href="/index.html">Início</a>
+        <a href="/produtos.html">Produtos</a>
+        <a href="/pedidos.html" id="navPedidos" style="display: none;">Meus Pedidos</a>
+        <a href="/carrinho.html">Carrinho (<span id="cartCount">0</span>)</a>
+      </nav>
+
+      <div class="topo-acoes">
+        <span id="userInfo" class="user-info"></span>
+        <a id="loginLink" href="/login.html" class="btn-topo">Login</a>
+        <button id="logoutBtn" class="btn-topo btn-topo-secundario hidden">Sair</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" style="padding: 80px 0; background-color: #fcf9f9;">
+      <div class="container" style="display: flex; justify-content: space-between; align-items: center; gap: 40px;">
+        <div style="flex: 1;">
+          <h2 style="font-size: 3.5rem; color: #5a3e49; margin-bottom: 20px; line-height: 1.1;">Moda feminina com elegância e leveza.</h2>
+          <p style="font-size: 1.2rem; color: #666; margin-bottom: 30px;">Descubra peças cuidadosamente selecionadas para realçar a sua beleza autêntica em todos os momentos do seu dia.</p>
+          <a href="/produtos.html" class="btn" style="padding: 15px 30px; font-size: 1.1rem;">Ver Catálogo</a>
+        </div>
+        <div style="flex: 1;">
+          <img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=800&auto=format&fit=crop" alt="Moda Elegance" style="width: 100%; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+        </div>
+      </div>
+    </section>
+
+    <section id="sobre" style="background-color: #fff; padding: 80px 0; text-align: center;">
+      <div class="container" style="max-width: 800px; margin: 0 auto;">
+        <p style="color: #c9a0a0; font-weight: bold; text-transform: uppercase; letter-spacing: 2px;">Nossa Essência</p>
+        <h2 style="color: #5a3e49; font-size: 2.5rem; margin-bottom: 30px;">Muito mais do que roupas. Uma identidade.</h2>
+        <p style="font-size: 1.1rem; color: #666; line-height: 1.8; margin-bottom: 20px;">
+          A Elegance Store nasceu da paixão por conectar mulheres à sua melhor versão através da moda. Nosso propósito é oferecer peças que combinam conforto, qualidade e as últimas tendências.
+        </p>
+        <p style="font-size: 1.1rem; color: #666; line-height: 1.8;">
+          Trabalhamos com fornecedores selecionados e um cuidado impecável em cada detalhe, desde a escolha dos tecidos até a entrega da caixinha perfumada na sua porta. Porque vestir-se bem é um ato de amor próprio.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer style="background-color: #5a3e49; color: white; text-align: center; padding: 30px 0;">
+    <p>&copy; 2024 Elegance Store. Todos os direitos reservados.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
