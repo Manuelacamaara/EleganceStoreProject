@@ -1,29 +1,13 @@
 import User from '../models/User.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
-import nodemailer from 'nodemailer';
-import crypto from 'crypto';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
-// CONFIGURAÇÃO DO TRANSPORTER (Ajustada para Porta 587/TLS)
-const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false, // false para porta 587
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS, // Sua Senha de App de 16 dígitos
-  },
-  tls: {
-    rejectUnauthorized: false // Evita erros de certificado em ambientes de nuvem
-  }
-});
-
 const generateToken = (id) => jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '30d' });
 
-// --- REGISTRO ---
+// --- REGISTRO (Simplificado, sem e-mail) ---
 export async function register(req, res) {
   try {
     const { name, email, password } = req.body;
@@ -38,80 +22,37 @@ export async function register(req, res) {
     const userExists = await User.findOne({ email });
     if (userExists) return res.status(400).json({ message: 'E-mail já cadastrado.' });
 
-    // 3. Prepara os dados do usuário
+    // 3. Prepara os dados e faz o hash da senha
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
-    const verificationToken = crypto.randomBytes(32).toString('hex');
 
-    // 4. Monta a URL de verificação
-    const baseUrl = process.env.BASE_URL;
-    const url = `${baseUrl}/api/auth/verify/${verificationToken}`;
+    // 4. SALVA DIRETO NO MONGODB
+    // Forçamos o isVerified como true para evitar problemas no login
+    const user = await User.create({
+        name, 
+        email, 
+        password: hashedPassword,
+        isVerified: true 
+    });
 
-    // 5. Tenta enviar o e-mail ANTES de salvar no banco
-    try {
-        await transporter.sendMail({
-            from: `"Elegance Store" <${process.env.EMAIL_USER}>`,
-            to: email,
-            subject: 'Ative sua conta na Elegance Store',
-            html: `
-              <div style="font-family: sans-serif; color: #333; max-width: 600px; margin: auto; border: 1px solid #ddd; padding: 20px; border-radius: 8px;">
-                <h2 style="color: #5a3e49;">Olá, ${name}!</h2>
-                <p>Falta apenas um passo para você começar a comprar na Elegance Store.</p>
-                <p>Clique no botão abaixo para confirmar seu e-mail e ativar sua conta:</p>
-                <div style="text-align: center; margin-top: 25px;">
-                    <a href="${url}" style="background: #5a3e49; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold;">Confirmar Minha Conta</a>
-                </div>
-                <p style="font-size: 12px; color: #777; margin-top: 20px;">Se o botão não funcionar, copie e cole este link: ${url}</p>
-              </div>
-            `
-        });
-
-        // 6. SÓ SALVA NO MONGODB SE O E-MAIL FOI ENVIADO
-        await User.create({
-            name, email, password: hashedPassword, verificationToken
-        });
-
-        res.status(201).json({ message: 'Cadastro realizado! Verifique seu e-mail para ativar a conta.' });
-
-    } catch (mailError) {
-        console.error("Erro detalhado do Nodemailer:", mailError);
-        return res.status(500).json({ message: 'Erro ao enviar e-mail de confirmação.', error: mailError.message });
-    }
+    res.status(201).json({ 
+        message: 'Cadastro realizado com sucesso!',
+        token: generateToken(user._id)
+    });
 
   } catch (error) {
     res.status(500).json({ message: 'Erro no servidor', error: error.message });
   }
 }
 
-// --- VERIFICAÇÃO DE E-MAIL ---
-export async function verifyEmail(req, res) {
-  try {
-    const user = await User.findOne({ verificationToken: req.params.token });
-    if (!user) return res.status(400).send('<h1 style="text-align: center; color: red;">Link inválido ou expirado.</h1>');
-
-    user.isVerified = true;
-    user.verificationToken = undefined;
-    await user.save();
-
-    const baseUrl = process.env.BASE_URL;
-    res.redirect(`${baseUrl}/login.html?verified=true`);
-  } catch (error) {
-    res.status(500).send('<h1>Erro na verificação.</h1>');
-  }
-}
-
-// --- LOGIN ---
+// --- LOGIN (Sem trava de verificação) ---
 export async function login(req, res) {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
 
     if (user && (await bcrypt.compare(password, user.password))) {
-      
-      if (!user.isVerified) {
-        return res.status(401).json({ message: 'Por favor, confirme seu e-mail antes de entrar!' });
-      }
-
+      // A trava if (!user.isVerified) foi removida daqui!
       res.json({
         _id: user.id,
         name: user.name,
@@ -125,4 +66,9 @@ export async function login(req, res) {
   } catch (error) {
     res.status(500).json({ message: 'Erro no login' });
   }
+}
+
+// --- ROTA MANTIDA APENAS PARA NÃO QUEBRAR O routes.js ---
+export async function verifyEmail(req, res) {
+  res.status(200).json({ message: 'Sistema de verificação desativado.' });
 }
