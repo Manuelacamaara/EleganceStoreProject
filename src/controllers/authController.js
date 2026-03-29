@@ -7,11 +7,17 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+// CONFIGURAÇÃO DO TRANSPORTER (Ajustada para Porta 587/TLS)
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  host: "smtp.gmail.com",
+  port: 587,
+  secure: false, // false para porta 587
   auth: {
-    user: process.env.EMAIL_USER, 
-    pass: process.env.EMAIL_PASS       
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS, // Sua Senha de App de 16 dígitos
+  },
+  tls: {
+    rejectUnauthorized: false // Evita erros de certificado em ambientes de nuvem
   }
 });
 
@@ -22,25 +28,26 @@ export async function register(req, res) {
   try {
     const { name, email, password } = req.body;
     
-    // 1. Validação de segurança no BACKEND (Double Check)
+    // 1. Validação de segurança no Backend
     const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{6,}$/;
     if (!passwordRegex.test(password)) {
         return res.status(400).json({ message: 'A senha não atende aos requisitos de segurança.' });
     }
 
-    // 2. Checa se usuário já existe
+    // 2. Checa duplicidade
     const userExists = await User.findOne({ email });
     if (userExists) return res.status(400).json({ message: 'E-mail já cadastrado.' });
 
-    // 3. Prepara os dados
+    // 3. Prepara os dados do usuário
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
     const verificationToken = crypto.randomBytes(32).toString('hex');
 
-    // 4. Tenta enviar o e-mail PRIMEIRO (ou garante o tratamento de erro)
+    // 4. Monta a URL de verificação
     const baseUrl = process.env.BASE_URL;
     const url = `${baseUrl}/api/auth/verify/${verificationToken}`;
 
+    // 5. Tenta enviar o e-mail ANTES de salvar no banco
     try {
         await transporter.sendMail({
             from: `"Elegance Store" <${process.env.EMAIL_USER}>`,
@@ -51,12 +58,15 @@ export async function register(req, res) {
                 <h2 style="color: #5a3e49;">Olá, ${name}!</h2>
                 <p>Falta apenas um passo para você começar a comprar na Elegance Store.</p>
                 <p>Clique no botão abaixo para confirmar seu e-mail e ativar sua conta:</p>
-                <a href="${url}" style="background: #5a3e49; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; display: inline-block; margin-top: 15px; font-weight: bold;">Confirmar Minha Conta</a>
+                <div style="text-align: center; margin-top: 25px;">
+                    <a href="${url}" style="background: #5a3e49; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold;">Confirmar Minha Conta</a>
+                </div>
+                <p style="font-size: 12px; color: #777; margin-top: 20px;">Se o botão não funcionar, copie e cole este link: ${url}</p>
               </div>
             `
         });
 
-        // 5. SÓ SALVA NO BANCO SE O E-MAIL FOR ENVIADO COM SUCESSO
+        // 6. SÓ SALVA NO MONGODB SE O E-MAIL FOI ENVIADO
         await User.create({
             name, email, password: hashedPassword, verificationToken
         });
@@ -64,8 +74,8 @@ export async function register(req, res) {
         res.status(201).json({ message: 'Cadastro realizado! Verifique seu e-mail para ativar a conta.' });
 
     } catch (mailError) {
-        console.error("Erro ao enviar e-mail:", mailError);
-        return res.status(500).json({ message: 'Erro ao enviar e-mail de confirmação. Verifique se o e-mail é válido.' });
+        console.error("Erro detalhado do Nodemailer:", mailError);
+        return res.status(500).json({ message: 'Erro ao enviar e-mail de confirmação.', error: mailError.message });
     }
 
   } catch (error) {
