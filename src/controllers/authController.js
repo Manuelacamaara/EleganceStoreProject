@@ -7,7 +7,6 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-// CARTEIRO USANDO VARIÁVEIS DE AMBIENTE (Segurança Total)
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
@@ -16,7 +15,6 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-// Chave JWT protegida
 const generateToken = (id) => jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '30d' });
 
 // --- REGISTRO ---
@@ -24,38 +22,54 @@ export async function register(req, res) {
   try {
     const { name, email, password } = req.body;
     
+    // 1. Validação de segurança no BACKEND (Double Check)
+    const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{6,}$/;
+    if (!passwordRegex.test(password)) {
+        return res.status(400).json({ message: 'A senha não atende aos requisitos de segurança.' });
+    }
+
+    // 2. Checa se usuário já existe
     const userExists = await User.findOne({ email });
     if (userExists) return res.status(400).json({ message: 'E-mail já cadastrado.' });
 
+    // 3. Prepara os dados
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
     const verificationToken = crypto.randomBytes(32).toString('hex');
 
-    await User.create({
-      name, email, password: hashedPassword, verificationToken
-    });
-
-    // Puxa a URL base do .env (localhost agora, mas será o site real depois)
+    // 4. Tenta enviar o e-mail PRIMEIRO (ou garante o tratamento de erro)
     const baseUrl = process.env.BASE_URL;
     const url = `${baseUrl}/api/auth/verify/${verificationToken}`;
 
-    await transporter.sendMail({
-      from: `"Elegance Store" <${process.env.EMAIL_USER}>`,
-      to: email,
-      subject: 'Ative sua conta na Elegance Store',
-      html: `
-        <div style="font-family: sans-serif; color: #333; max-width: 600px; margin: auto; border: 1px solid #ddd; padding: 20px; border-radius: 8px;">
-          <h2 style="color: #5a3e49;">Olá, ${name}!</h2>
-          <p>Falta apenas um passo para você começar a comprar na Elegance Store.</p>
-          <p>Clique no botão abaixo para confirmar seu e-mail e ativar sua conta de forma segura:</p>
-          <a href="${url}" style="background: #5a3e49; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; display: inline-block; margin-top: 15px; font-weight: bold;">Confirmar Minha Conta</a>
-        </div>
-      `
-    });
+    try {
+        await transporter.sendMail({
+            from: `"Elegance Store" <${process.env.EMAIL_USER}>`,
+            to: email,
+            subject: 'Ative sua conta na Elegance Store',
+            html: `
+              <div style="font-family: sans-serif; color: #333; max-width: 600px; margin: auto; border: 1px solid #ddd; padding: 20px; border-radius: 8px;">
+                <h2 style="color: #5a3e49;">Olá, ${name}!</h2>
+                <p>Falta apenas um passo para você começar a comprar na Elegance Store.</p>
+                <p>Clique no botão abaixo para confirmar seu e-mail e ativar sua conta:</p>
+                <a href="${url}" style="background: #5a3e49; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; display: inline-block; margin-top: 15px; font-weight: bold;">Confirmar Minha Conta</a>
+              </div>
+            `
+        });
 
-    res.status(201).json({ message: 'Cadastro realizado! Verifique seu e-mail para ativar a conta.' });
+        // 5. SÓ SALVA NO BANCO SE O E-MAIL FOR ENVIADO COM SUCESSO
+        await User.create({
+            name, email, password: hashedPassword, verificationToken
+        });
+
+        res.status(201).json({ message: 'Cadastro realizado! Verifique seu e-mail para ativar a conta.' });
+
+    } catch (mailError) {
+        console.error("Erro ao enviar e-mail:", mailError);
+        return res.status(500).json({ message: 'Erro ao enviar e-mail de confirmação. Verifique se o e-mail é válido.' });
+    }
+
   } catch (error) {
-    res.status(500).json({ message: 'Erro no cadastro', error: error.message });
+    res.status(500).json({ message: 'Erro no servidor', error: error.message });
   }
 }
 
@@ -85,7 +99,7 @@ export async function login(req, res) {
     if (user && (await bcrypt.compare(password, user.password))) {
       
       if (!user.isVerified) {
-        return res.status(401).json({ message: 'Por favor, confirme seu e-mail antes de entrar! Verifique sua caixa de entrada.' });
+        return res.status(401).json({ message: 'Por favor, confirme seu e-mail antes de entrar!' });
       }
 
       res.json({
